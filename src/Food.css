@@ -1,0 +1,82 @@
+* {
+  margin: 0px;
+}
+
+.food__container {
+  /*display: flex;
+  flex-direction: column;
+  justify-content: flex-end;*/
+  display: grid;
+  justify-items: right;
+  max-width: 330px;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 15px;
+  background-color: rgb(250, 250, 245);
+  padding: px;
+  margin: 5px;
+}
+
+.food__product {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr;
+  width: 100%;
+  padding: 5px;
+}
+
+.food__img {
+  /*position: absolute;*/
+  max-width: 150px;
+  object-fit: contain;
+  padding-right: 5px;
+  border-radius: 15px;
+  z-index: 1;
+}
+/*
+.food__product__context {
+  position: absolute;
+  height: 100%;
+  z-index: 1;
+}*/
+
+.food__name {
+  height: 70%;
+  color: coral;
+  -webkit-text-stroke: 1px rgb(61, 61, 61);
+  font-weight: 300;
+}
+
+.food__price {
+  display: grid;
+  /*width: 100vh;
+  height: 80%;*/
+  justify-content: end;
+}
+
+.food__qtybottom {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 40px;
+  min-width: 250px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-right: 10px;
+}
+
+.food__qty {
+  width: 100px;
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 5px;
+}
+
+.food__qtycontrol {
+  width: 30px;
+  height: 30px;
+}
+
+.food__order {
+  width: 60px;
+  height: 30px;
+}

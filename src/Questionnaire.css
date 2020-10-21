@@ -1,0 +1,37 @@
+* {
+  margin: 0;
+}
+
+.questionnaire__container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px;
+  border-bottom: 1px dotted lightsalmon;
+}
+
+.questionnaire__context {
+  width: auto;
+}
+
+.questionnaire__ansercontainer {
+  display: flex;
+  justify-content: space-between;
+  background-color: lightpink;
+  width: 200px;
+}
+
+@media screen and (orientation: portrait) {
+  .questionnaire__ansercontainer {
+    width: 150px;
+  }
+}
+
+.questionnaire__anser {
+  margin: 5px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  justify-items: center;
+  grid-gap: 5px;
+}
