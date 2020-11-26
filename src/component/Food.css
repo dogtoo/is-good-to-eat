@@ -30,7 +30,7 @@
   object-fit: contain;
   padding-right: 5px;
   border-radius: 15px;
-  z-index: 1;
+  /*z-index: 1;*/
 }
 /*
 .food__product__context {

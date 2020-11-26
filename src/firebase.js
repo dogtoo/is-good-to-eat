@@ -8,7 +8,7 @@ const firebaseConfig = {
   storageBucket: "is-good-to-eat.appspot.com",
   messagingSenderId: "777737522166",
   appId: "1:777737522166:web:1fcb10628a73d8a75a55d7",
-  measurementId: "G-5DR43ERZNH"
+  measurementId: "G-5DR43ERZNH",
 };
 
 let db;
@@ -22,4 +22,5 @@ try {
 } catch (error) {
   // ...
 }
-export {db, auth, storage};
+
+export { db, auth, storage };

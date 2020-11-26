@@ -1,0 +1,19 @@
+.main__container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.main__itemlink {
+  display: flex;
+  justify-content: center;
+  height: 30px;
+  width: 200px;
+  max-width: 200px;
+  padding: 5px;
+  margin: 5px;
+  background-color: lightsteelblue;
+  border-radius: 5px;
+}
