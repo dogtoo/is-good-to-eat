@@ -6,12 +6,13 @@ import Login from "./Login";
 
 import { AuthProvider } from "./Auth";
 import PrivateRoute from "./PrivateRoute";
+import reducer, { initialState } from './reducer';
 
 import "./App.css";
 
 function App() {
   return (
-    <AuthProvider className="app__container">
+    <AuthProvider initialState={initialState} reducer={reducer} className="app__container">
       <Router>
         <div>
           <PrivateRoute exact path="/" component={Main} title="Main" />

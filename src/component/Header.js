@@ -3,8 +3,10 @@ import { Redirect } from "react-router-dom";
 import "./Header.css";
 
 import { auth } from "../firebase";
+import { useStateValue, usestateValue } from '../Auth';
 
-export default function Header({ currentUser, title }) {
+export default function Header({ title }) {
+  const [{ currentUser }, dispatch] = useStateValue();
   useEffect(() => {
     document.title = title;
   }, [title]);
@@ -13,6 +15,10 @@ export default function Header({ currentUser, title }) {
     auth
       .signOut()
       .then(() => {
+        dispatch({
+          type: 'LOGOUT',
+          payload: {},
+        })
         return <Redirect to="/login" />;
       })
       .catch((error) => {
@@ -32,8 +38,8 @@ export default function Header({ currentUser, title }) {
             <button onClick={logout}>logout</button>
           </div>
         ) : (
-          <div>{currentUser}</div>
-        )}
+            <div>{currentUser}</div>
+          )}
       </div>
     </div>
   );

@@ -2,19 +2,25 @@ import React, { useState, useContext } from "react";
 import "./Login.css";
 import { useLocation, Redirect, useHistory } from "react-router-dom";
 import { auth } from "./firebase";
-import { AuthContext } from "./Auth";
+//import { AuthContext } from "./Auth";
+import { useStateValue } from './Auth';
 
 function Login() {
   const history = useHistory();
   let location = useLocation();
   const [email, setEmail] = useState("");
   const [passwd, setPasswd] = useState("");
+  const [{ currentUser }, dispatch] = useStateValue();
 
   const login = (e) => {
     e.preventDefault();
     auth
       .signInWithEmailAndPassword(email, passwd)
-      .then((auth) => {
+      .then((UserCredential) => {
+        dispatch({
+          type: 'LOGIN',
+          payload: UserCredential.user,
+        })
         history.push("/");
       })
       .catch((error) => alert(error.message));
@@ -30,8 +36,8 @@ function Login() {
     });
   };
 
-  const { currentUser } = useContext(AuthContext);
-  if (currentUser) {
+  //const { currentUser } = useContext(AuthContext);
+  if (currentUser?.email) {
     return <Redirect to="/" />;
   }
 
