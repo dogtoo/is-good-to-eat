@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom";
 import "./Header.css";
 
 import { auth } from "../firebase";
-import { useStateValue, usestateValue } from '../Auth';
+import { useStateValue } from '../Auth';
 
 export default function Header({ title }) {
   const [{ currentUser }, dispatch] = useStateValue();
@@ -27,10 +27,10 @@ export default function Header({ title }) {
   };
   return (
     <div className="header__container">
-      <h4>
+      <div>
         Is good to eat <span>🍽</span>
-        <h6>Wellcome: {currentUser?.email}</h6>
-      </h4>
+        <h3>Wellcome: {currentUser?.email}</h3>
+      </div>
 
       <div>
         {{ currentUser } ? (

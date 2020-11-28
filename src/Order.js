@@ -1,223 +1,83 @@
-import React from "react";
-import Webcam from "react-webcam";
-import { useState, useRef, useEffect, useContext } from "react";
-import "./Order.css";
+import React, {useState} from 'react';
+import Webcam from 'react-webcam';
+import uuid from 'react-uuid';
+import './Order.css';
+import { useStateValue } from './Auth';
 
-import Food from "./component/Food";
-import Questionnaire from "./component/Questionnaire";
-import db from "./firebase";
-import { AuthContext } from "./Auth";
+import Food from './component/Food';
+
+import {db} from './firebase';
 
 function Order() {
-  //const [imgSrc, setImgSrc] = useState(null);
-  const [summerprice, setSummerprice] = useState(0);
-  const [foods, setFoods] = useState([
-    {
-      imgUrl:
-        "https://t1.gstatic.com/images?q=tbn:ANd9GcRjXJ5muZViMyCONwo80Hu-wIuCfpxzrvFz3cKtzHZVayPKGJ0THyUP-4k5Jw6AJGGCINPyEoh7xXFA_fXjB1U",
-      name: "Hamburg",
-      id: "1",
-      price: 123,
-    },
-    {
-      imgUrl:
-        "https://t1.gstatic.com/images?q=tbn:ANd9GcRjXJ5muZViMyCONwo80Hu-wIuCfpxzrvFz3cKtzHZVayPKGJ0THyUP-4k5Jw6AJGGCINPyEoh7xXFA_fXjB1U",
-      name: "Hamburg Beef good to eat",
-      id: "2",
-      price: 555,
-    },
-    {
-      imgUrl:
-        "https://t1.gstatic.com/images?q=tbn:ANd9GcRjXJ5muZViMyCONwo80Hu-wIuCfpxzrvFz3cKtzHZVayPKGJ0THyUP-4k5Jw6AJGGCINPyEoh7xXFA_fXjB1U",
-      name: "Hamburg Beef good to eat",
-      id: "2",
-      price: 555,
-    },
-    {
-      imgUrl:
-        "https://t1.gstatic.com/images?q=tbn:ANd9GcRjXJ5muZViMyCONwo80Hu-wIuCfpxzrvFz3cKtzHZVayPKGJ0THyUP-4k5Jw6AJGGCINPyEoh7xXFA_fXjB1U",
-      name: "Hamburg Beef good to eat",
-      id: "2",
-      price: 555,
-    },
-    {
-      imgUrl:
-        "https://t1.gstatic.com/images?q=tbn:ANd9GcRjXJ5muZViMyCONwo80Hu-wIuCfpxzrvFz3cKtzHZVayPKGJ0THyUP-4k5Jw6AJGGCINPyEoh7xXFA_fXjB1U",
-      name: "Hamburg Beef good to eat",
-      id: "2",
-      price: 555,
-    },
-    {
-      imgUrl:
-        "https://t1.gstatic.com/images?q=tbn:ANd9GcRjXJ5muZViMyCONwo80Hu-wIuCfpxzrvFz3cKtzHZVayPKGJ0THyUP-4k5Jw6AJGGCINPyEoh7xXFA_fXjB1U",
-      name: "Hamburg Beef good to eat",
-      id: "2",
-      price: 555,
-    },
-    {
-      imgUrl:
-        "https://t1.gstatic.com/images?q=tbn:ANd9GcRjXJ5muZViMyCONwo80Hu-wIuCfpxzrvFz3cKtzHZVayPKGJ0THyUP-4k5Jw6AJGGCINPyEoh7xXFA_fXjB1U",
-      name: "Hamburg Beef good to eat",
-      id: "2",
-      price: 555,
-    },
-    {
-      imgUrl:
-        "https://t1.gstatic.com/images?q=tbn:ANd9GcRjXJ5muZViMyCONwo80Hu-wIuCfpxzrvFz3cKtzHZVayPKGJ0THyUP-4k5Jw6AJGGCINPyEoh7xXFA_fXjB1U",
-      name: "Hamburg Beef good to eat",
-      id: "2",
-      price: 555,
-    },
-  ]);
-  const [orders, setOrders] = useState([]);
-  const [modeltype, setModeltype] = useState("select");
-  const [questions, setQuestions] = useState([]);
-  const [questionnaires, setQuestionnaires] = useState([]);
-  const [show, setShow] = useState("");
-
-  const { currentUser } = useContext(AuthContext);
-
-  useEffect(() => {
-    let sum_ = 0;
-    orders.map((order) => {
-      sum_ += order.qty * order.price;
+  const [{menu, shoppingbasket}, dispatch] = useStateValue();
+  const [menuchose, setMenuchose] = useState('hamburg');
+  const handle_menu_chick = (cm) => {
+    setMenuchose(cm)
+  }
+  const hanleMeals = () =>{
+    shoppingbasket.order_date = new Date();
+    shoppingbasket.basket_number = uuid();
+    shoppingbasket.desktop_name = 1;
+    shoppingbasket.waiter = '01';
+    shoppingbasket.is_checkout = false;
+    db.collection("order").doc(shoppingbasket.basket_number).set({
+      ...shoppingbasket
+    })
+    .then(function() {
+        console.log("Document successfully written!");
+        dispatch({
+          type: 'ORDER_ADD_ORDER',
+        })
+    })
+    .catch(function(error) {
+        console.error("Error writing document: ", error);
     });
-    setSummerprice(sum_);
-  }, [orders]);
-
-  const addproduct = (food, qty) => {
-    let order = {
-      ...food,
-      qty: qty,
-    };
-    setOrders([...orders, order]);
-  };
-
-  const videoConstraints = {
-    width: 1024,
-    facingMode: "user",
-  };
-  const webcamRef = useRef(null);
-  const capture = React.useCallback(
-    (id, ans) => {
-      const imageSrc = webcamRef.current.getScreenshot();
-      setQuestionnaires([
-        ...questionnaires,
-        {
-          id: id,
-          fraction: ans,
-          imgUrl: "",
-          imageSrc: imageSrc,
-        },
-      ]);
-      //setImgSrc(imageSrc);
-    },
-    [webcamRef]
-  );
-  /*const capture = () => {
-    const imageSrc = webcamRef.current.getScreenshot();
-    setImgSrc(imageSrc);
-  };*/
+  }
 
   return (
-    <div className="order__container">
-      <div className="order__title">
-        <h4 className="order__checkout">
-          {modeltype !== "questionnaire" ? (
-            <div className="order__checkout">
-              <span>💸</span>
-              {summerprice}
-            </div>
-          ) : (
-            <div>
-              <h4>Questionnaire</h4>
-            </div>
-          )}
-          <div>
-            {modeltype === "select" ? (
-              <buttion
-                className="order__capture"
-                onClick={() => setModeltype("checkout")}
-              >
-                訂餐<span>🛒</span>
-              </buttion>
-            ) : modeltype === "checkout" ? (
-              <div>
-                <buttion
-                  className="order__capture"
-                  onClick={() => setModeltype("questionnaire")}
-                >
-                  確認<span>📲</span>
-                </buttion>
-                <buttion
-                  className="order__capture"
-                  onClick={() => setModeltype("select")}
-                >
-                  取消<span>🗑</span>
-                </buttion>
-              </div>
-            ) : (
-              <div>📃</div>
-            )}
-          </div>
-        </h4>
+  <div className="order__container">
+    <div className="order__menulist">
+      <div className="order__menulisttitle">菜單總類</div>
+      <div className="order__menulistcontent">
+        {/*menu.map((menu)=>(
+          <div>{menu.menu_name}</div>
+        ))*/}
+        {/*menu.map((m)=>(
+          <div onClick={(e)=>{handle_menu_chick(Object.keys(m)[0])}}>{Object.keys(m)[0]}</div>
+        ))*/}
+        {Object.keys(menu).map((menu_name)=>(
+          //console.log('order',menu[menu_name])
+          <div onClick={(e)=>{handle_menu_chick(menu_name)}}>{menu_name}</div>
+        ))}
+        
       </div>
-      <Webcam
-        className="order__webcame"
-        audio={false}
-        ref={webcamRef}
-        screenshotFormat="image/jpeg"
-        videoConstraints={videoConstraints}
-      />
-      {modeltype === "select" ? (
-        foods.map((food) => (
-          <Food
-            imgUrl={food.imgUrl}
-            name={food.name}
-            id={food.id}
-            price={food.price}
-            order={(qty) => addproduct(food, qty)}
-          />
-        ))
-      ) : modeltype === "checkout" ? (
-        orders.map((food) => (
-          <Food
-            imgUrl={food.imgUrl}
-            name={food.name}
-            id={food.id}
-            price={food.price}
-            qty={food.qty}
-          />
-        ))
-      ) : (
-        <Questionnaire
-          id="1"
-          question="好吃嗎？好吃嗎？好吃嗎？好吃嗎？好吃嗎？好吃嗎？好吃嗎？好吃嗎？好吃嗎？"
-          capture={(id, ans) => capture(id, ans)}
-        />
-      )}
-      {/*<button className="order__capture" onClick={capture}>
-        Capture photo
-      </button>
-      imgSrc && <img className="order__imgShow" src={imgSrc} />*/}
-      <button
-        onClick={() => {
-          questionnaires.map((questionnaire) =>
-            setShow(
-              <div className="order__test">
-                <div>{questionnaire.id}</div>
-                <div>{questionnaire.fraction}</div>
-                <img className="order__imgShow" src={questionnaire.imageSrc} />
-              </div>
-            )
-          );
-        }}
-      >
-        show
-      </button>
-      <div>{show}</div>
     </div>
-  );
+    <div className="order__mealscontent">
+      {
+        menu[menuchose].meals.map(({meal_name, meal_cname, meal_price, meal_image_url})=>(
+          <Food
+            imgUrl={meal_image_url}
+            name={meal_name}
+            cname={meal_cname}
+            price={meal_price} 
+            order={true}
+            />
+        ))          
+      }
+    </div>
+    <div className="order__shoppingbasketcontent">
+      {shoppingbasket.meals.map(({meal_name, meal_qty})=>{
+        return (
+          <div>{meal_name} {meal_qty}</div>
+        )
+      })}
+      <h3>總金額</h3>
+      <div>{shoppingbasket.tot_amount}</div>
+      <button onClick={(e)=>{hanleMeals()}}>菜單確認</button>
+    </div>
+  </div>
+  )
+
 }
 
 export default Order;

@@ -1,65 +1,78 @@
 .order__container {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-template-rows: 1fr;
+    display: flex;
+    flex-direction: column;
 }
-
-@media screen and (max-width: 360px) {
-  .order__container {
-    grid-template-columns: 1fr;
-  }
+.order__content {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: 1fr;
 }
-
-@media screen and (min-width: 640px) {
-  .order__container {
-    grid-template-columns: repeat(2, 1fr);
-  }
+@media screen and (max-width: 550px) {
+    .order__content {
+        grid-template-columns: 1fr;
+    }
+}
+@media screen and (min-width: 550px) and (max-width: 700px) {
+    .order__content {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+@media screen and (min-width: 700px) and (max-width: 1000px) {
+    .order__content {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+@media screen and (min-width: 1000px) and (max-width: 1200px) {
+    .order__content {
+        grid-template-columns: repeat(4, 1fr);
+    }
 }
 
 .order__title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 50px;
-  background-color: #fafafa;
-  padding-left: 5px;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+    background-color: #fafafa;
+    padding-left: 5px;
 }
 
 .order__checkout {
-  display: flex;
-  align-items: center;
-  padding: 5px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
 }
 
 .order__webcame {
-  position: absolute;
-  top: -2000px;
-  margin: 0;
-  padding: 0;
-  width: 50vh;
-  object-fit: contain;
+    position: absolute;
+    top: -2000px;
+    margin: 0;
+    padding: 0;
+    width: 50vh;
+    object-fit: contain;
 }
 
 .order__capture {
-  width: 200px;
-  cursor: pointer;
+    width: 200px;
+    cursor: pointer;
 }
 
 @media screen and (orientation: portrait) {
-  .order__imgShow {
-    width: 100px;
-    object-fit: contain;
-  }
+    .order__imgShow {
+        width: 100px;
+        object-fit: contain;
+    }
 }
 
 @media screen and (orientation: landscape) {
-  /**/
-  .order__imgShow {
-    width: 100px;
-    object-fit: contain;
-  }
+    /**/
+    .order__imgShow {
+        width: 100px;
+        object-fit: contain;
+    }
 }
 
 .order__test {
-  display: flex;
+    display: flex;
 }

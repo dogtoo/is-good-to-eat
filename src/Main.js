@@ -9,7 +9,9 @@ function Main() {
       <div className="main__itemlink">
         <Link to="/order">order</Link>
       </div>
-      <div className="main__itemlink">checkout</div>
+      <div className="main__itemlink">
+        <Link to="/checkout">checkout</Link>
+      </div>
       <div className="main__itemlink">create menu</div>
       <div className="main__itemlink">menu analysis</div>
       <div className="main__itemlink">custom analysis</div>
