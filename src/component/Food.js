@@ -14,7 +14,7 @@ function Food({ imgUrl, name, cname, price, order }) {
     order(Qty);
     setQty(0);
   };*/
-  const [{shoppingbasket}, dispatch] = useStateValue();
+  const [{ shoppingbasket }, dispatch] = useStateValue();
 
   const setOrder = (e) => {
     //console.log('setOrder')
@@ -22,7 +22,9 @@ function Food({ imgUrl, name, cname, price, order }) {
       type: 'FOOD_ADD_PRODUCT',
       payload: {
         meal_name: name,
+        meal_cname: cname,
         meal_qty: Qty,
+        meal_price: price,
       }
     })
 

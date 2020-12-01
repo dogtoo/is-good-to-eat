@@ -13,7 +13,7 @@ export const initialState = {
         },
       ],
     },
-    pizza:{
+    pizza: {
       menu_name: 'pizza',
       menu_cname: '披薩',
       meals: [
@@ -50,25 +50,25 @@ export const initialState = {
   //shoppingbasket作用在local所以不用放db
   //點菜確定後將資料insert到collections(order).doc(uuid)
   shoppingbasket: {
-    meals:[]
+    meals: []
   },
-    //Format A
-    /*{
-      basket_number: uuid(2),
-      desktop_name: 1,
-      meals: [
-        {
-          meal_name: 'porkpizza',
-          meal_qty: 1,
-        },
-        {
-          meal_name: 'porkpizza',
-          meal_qty: 2,
-        },
-      ],
-      tot_amount: 390,
-      waiter: '01',
-    },*/
+  //Format A
+  /*{
+    basket_number: uuid(2),
+    desktop_name: 1,
+    meals: [
+      {
+        meal_name: 'porkpizza',
+        meal_qty: 1,
+      },
+      {
+        meal_name: 'porkpizza',
+        meal_qty: 2,
+      },
+    ],
+    tot_amount: 390,
+    waiter: '01',
+  },*/
   desktop: [//因為單機固定九桌，這不放到db
     //Format A
     /*{
@@ -128,6 +128,7 @@ export const initialState = {
       basket_number: uuid(1),
     },*/
   ],
+  selDesktop: 0,
   //order這邊只是給local 暫存用的，資料從db來
   order: [
     //Format B
@@ -205,24 +206,40 @@ export const initialState = {
       pic_url: '',
     }*/
   ],
-  meals:[]
+  meals: []
 };
 
 const reducer = (state, action) => {
-  //console.log(state)
+  //console.log(state.selDesktop)
   //console.log('redu')
   //console.log(action.payload)
+  action.type === 'DESKTOP_ORDER' &&
+    state.desktop.map((d) => {
+      if (d.desktop_name === state.selDesktop) {
+        d.enabled = true
+        d.basket_number = action.payload
+      }
+
+    })
+
   switch (action.type) {
     case 'LOGIN':
       return { ...state, currentUser: { ...action.payload } };
     case 'LOGOUT':
       return { ...state, currentUser: {} };
     case 'FOOD_ADD_PRODUCT':
-      return { ...state, shoppingbasket:{ ...state.shoppingbasket, meals:[...state.shoppingbasket.meals, {...action.payload}] }};
+      return { ...state, shoppingbasket: { ...state.shoppingbasket, meals: [...state.shoppingbasket.meals, { ...action.payload }] } };
     case 'FOOD_ADD_AMOUNT':
-      return { ...state, shoppingbasket:{ ...state.shoppingbasket, tot_amount: action.payload}}
+      return { ...state, shoppingbasket: { ...state.shoppingbasket, tot_amount: action.payload } }
     case 'ORDER_ADD_ORDER':
-      return { ...state, shoppingbasket:{ meals:[] }}
+      return { ...state, shoppingbasket: { meals: [] } }
+    case 'DESKTOP_SELECT':
+      return { ...state, selDesktop: action.payload }
+    case 'DESKTOP_ORDER':
+      //return { ...state, desktop:[ ...state.desktop.filter(d=>d.desktop_name!=selDesktop), action.payload]}
+      return { ...state, selDesktop: 0 }
+    case 'DESKTOP_CHECKOUT':
+      return { ...state, selDesktop: 0, }
     default:
       return state
   }
