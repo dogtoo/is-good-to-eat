@@ -213,15 +213,6 @@ const reducer = (state, action) => {
   //console.log(state.selDesktop)
   //console.log('redu')
   //console.log(action.payload)
-  action.type === 'DESKTOP_ORDER' &&
-    state.desktop.map((d) => {
-      if (d.desktop_name === state.selDesktop) {
-        d.enabled = true
-        d.basket_number = action.payload
-      }
-
-    })
-
   switch (action.type) {
     case 'LOGIN':
       return { ...state, currentUser: { ...action.payload } };
@@ -235,11 +226,31 @@ const reducer = (state, action) => {
       return { ...state, shoppingbasket: { meals: [] } }
     case 'DESKTOP_SELECT':
       return { ...state, selDesktop: action.payload }
-    case 'DESKTOP_ORDER':
+    case 'DESKTOP_ORDER': {
+      state.desktop.map((d) => {
+        if (d.desktop_name === state.selDesktop) {
+          d.enabled = true
+          d.basket_number = action.payload
+        }
+      })
       //return { ...state, desktop:[ ...state.desktop.filter(d=>d.desktop_name!=selDesktop), action.payload]}
       return { ...state, selDesktop: 0 }
-    case 'DESKTOP_CHECKOUT':
+    }
+    case 'DESKTOP_OVER_SEL':
       return { ...state, selDesktop: 0, }
+    case 'CHECKOUT_SEL_ORDER':
+      return { ...state, order: [...action.payload] }
+    case 'CHECKOUT_A_ORDER': {
+      state.desktop.map((d) => {
+        if (d.desktop_name === state.selDesktop) {
+          d.enabled = false
+          d.basket_number = false
+        }
+      })
+      return { ...state, selDesktop: 0, order: [] }
+    }
+    case 'QUESTION_INIT':
+      return { ...state, question: [...action.payload] }
     default:
       return state
   }

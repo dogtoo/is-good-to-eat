@@ -5,7 +5,7 @@ import { useStateValue } from './Auth';
 import Header from "./component/Header";
 
 function PrivateRoute({ component: RouteComponent, ...rest }) {
-  const [{ currentUser }, dispatch] = useStateValue();
+  const [{ currentUser, selDesktop }, dispatch] = useStateValue();
   //const { currentUser } = useContext(AuthContext);
   return (
     <Route

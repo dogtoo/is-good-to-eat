@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import Webcam from 'react-webcam';
 import uuid from 'react-uuid';
 import './Order.css';
 import { useStateValue } from './Auth';

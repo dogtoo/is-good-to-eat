@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation, Redirect, useHistory } from "react-router-dom";
 import './CheckOut.css';
 import { useStateValue } from './Auth';
 
@@ -7,48 +8,89 @@ import Desktop from './component/Desktop'
 import { db } from './firebase';
 
 function CheckOut() {
-  const [{ order, desktop, selDesktop }, dispatch] = useStateValue();
-  const [orderList, setOrderList] = useState([]);
-  let list = []
+  const [{ order, selDesktop }, dispatch] = useStateValue();
+  const history = useHistory();
+  let question = [];
   useEffect(() => {
     selDesktop > 0 &&
       db.collection("order").where('is_checkout', '==', false).where('desktop_name', '==', selDesktop)
         .get()
         .then((querySnapshot) => {
+          dispatch({
+            type: 'CHECKOUT_SEL_ORDER',
+            payload: []
+          })
           querySnapshot.forEach((doc) => {
-            console.log('doc:', doc.data())
-            list = [...list, doc.data()]
+            dispatch({
+              type: 'CHECKOUT_SEL_ORDER',
+              payload: [doc.data()]
+            })
           });
-        })
-        .then(() => {
-          setOrderList(list)
         })
         .catch(function (error) {
           console.log("Error getting documents: ", error);
         });
-    /*db
-    .collection('order')
-    .where('is_checkout', '==', false)
-    .onSnapshot(snapshot=>(
-      setOrderList(snapshot.docs.map(doc => ({
-        tot_amount: doc.tot_amount
-      })))
-    ))*/
   }, [selDesktop]);
+
+  const checkOut = () => {
+    console.log('checkout', order)
+    order.map(({ basket_number, meals, waiter }) => {
+      meals.map(({ meal_cname, meal_name }) => {
+        question = [...question, {
+          content: { meal_name, meal_cname },
+          value: 0,
+          pic_url: '',
+          //ai 處理後寫的資料
+          ai_value: 0,
+          ai_data: {},
+          ai_procdate: null
+        }]
+      })
+      question = [...question, {
+        content: { waiter },
+        value: 0,
+        pic_url: '',
+        //ai 處理後寫的資料
+        ai_value: 0,
+        ai_data: {},
+        ai_procdate: null
+      }]
+
+      db.collection("order").doc(basket_number).update({
+        //is_checkout: true,
+        is_checkout: false,
+        question: question
+      })
+        .then(() => {
+          console.log("Document successfully updated!");
+          dispatch({
+            type: 'CHECKOUT_A_ORDER'
+          })
+        })
+        .then(() => {
+          dispatch({
+            type: 'QUESTION_INIT',
+            payload: question,
+          })
+        })
+        .then(() => {
+          history.push("/question")
+        })
+        .catch(function (error) {
+          // The document probably doesn't exist.
+          console.error("Error updating document: ", error);
+        });
+    })
+
+
+  }
   //console.log('orderValue', orderValue)
   return (
     <div>
       <div>
-        {/*desktop?.map(({ desktop_name, enabled, basket_number }) => {
-          return (
-            <div>
-              <div onClick={() => setSelCheckOutDestop(desktop_name)}>{desktop_name} {enabled && 'order'}</div>
-            </div>
-          )
-        })*/}
         <Desktop />
       </div>
-      {orderList?.map(({ tot_amount, meals, waiter }) => {
+      {order?.map(({ tot_amount, meals, waiter }) => {
         return (
           <div>
             <div>{tot_amount}</div>
@@ -65,7 +107,7 @@ function CheckOut() {
             <div>{waiter}</div>
           </div>)
       })}
-      <div>結帳💸</div>
+      <div onClick={() => checkOut()}>結帳💸</div>
     </div>)
 }
 
