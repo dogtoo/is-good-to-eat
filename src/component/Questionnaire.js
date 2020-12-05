@@ -1,16 +1,33 @@
 import React from "react";
-import Webcam from 'react-webcam';
+import Webcam from "react-webcam";
 import "./Questionnaire.css";
+import { useState, useRef, useEffect } from "react";
 
-import { useState, useRef } from "react";
+import { useStateValue } from "../Auth";
 
-function Questionnaire({ meal_cname, meal_name, waiter }) {
+function Questionnaire({ content, index }) {
+  const [{ question }, dispatch] = useStateValue();
   const [fraction, setFraction] = useState(null);
   const [imgSrc, setImgSrc] = useState();
   const setAnser = (ans) => {
     setFraction(ans);
     capture();
-  }
+  };
+
+  useEffect(() => {
+    dispatch({
+      type: "QUESTION_UPDATE",
+      payload: {
+        idx: index,
+        data: {
+          ...question[index],
+          value: fraction,
+          pic_url: imgSrc ? imgSrc : "",
+        },
+      },
+    });
+    //console.log(index, question[index]);
+  }, [imgSrc]);
 
   const videoConstraints = {
     width: 1024,
@@ -32,16 +49,18 @@ function Questionnaire({ meal_cname, meal_name, waiter }) {
         videoConstraints={videoConstraints}
       />
       {imgSrc && <img className="order__imgShow" src={imgSrc} />}
-      <div className="questionnaire__context">請給 {meal_cname} {meal_name} {waiter} 個分數</div>
+      <div className="questionnaire__context">
+        請給 {Object.values(content)} 個分數
+      </div>
       <div className="questionnaire__ansercontainer">
         <div className="questionnaire__anser">
           <div>😍</div>
           <div>
             <input
               type="radio"
-              value="4"
-              onChange={() => setAnser("4")}
-              checked={fraction === "4"}
+              value="5"
+              onChange={() => setAnser("5")}
+              checked={fraction === "5"}
             />
           </div>
         </div>
@@ -51,8 +70,8 @@ function Questionnaire({ meal_cname, meal_name, waiter }) {
             <input
               type="radio"
               value="3"
-              onChange={() => setAnser("3")}
-              checked={fraction === "3"}
+              onChange={() => setAnser("4")}
+              checked={fraction === "4"}
             />
           </div>
         </div>
@@ -62,8 +81,8 @@ function Questionnaire({ meal_cname, meal_name, waiter }) {
             <input
               type="radio"
               value="2"
-              onChange={() => setAnser("2")}
-              checked={fraction === "2"}
+              onChange={() => setAnser("3")}
+              checked={fraction === "3"}
             />
           </div>
         </div>
@@ -73,7 +92,17 @@ function Questionnaire({ meal_cname, meal_name, waiter }) {
             <input
               type="radio"
               value="1"
-
+              onChange={() => setAnser("2")}
+              checked={fraction === "2"}
+            />
+          </div>
+        </div>
+        <div className="questionnaire__anser">
+          <div>😫</div>
+          <div>
+            <input
+              type="radio"
+              value="1"
               onChange={() => setAnser("1")}
               checked={fraction === "1"}
             />

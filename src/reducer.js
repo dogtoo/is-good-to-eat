@@ -1,33 +1,37 @@
 export const initialState = {
   currentUser: {},
-  menu: {//menu因為資料固定所以不用放db
+  menu: {
+    //menu因為資料固定所以不用放db
     hamburg: {
-      menu_name: 'hamburg',
-      menu_cname: '漢堡',
+      menu_name: "hamburg",
+      menu_cname: "漢堡",
       meals: [
         {
-          meal_cname: '牛肉漢堡',
-          meal_name: 'beefburg',
+          meal_cname: "牛肉漢堡",
+          meal_name: "beefburg",
           meal_price: 60,
-          meal_image_url: 'https://img.ltn.com.tw/Upload/food/page/2017/01/01/170101-5076-0-CGh2b.jpg',
+          meal_image_url:
+            "https://img.ltn.com.tw/Upload/food/page/2017/01/01/170101-5076-0-CGh2b.jpg",
         },
       ],
     },
     pizza: {
-      menu_name: 'pizza',
-      menu_cname: '披薩',
+      menu_name: "pizza",
+      menu_cname: "披薩",
       meals: [
         {
-          meal_cname: '牛肉披薩',
-          meal_name: 'beefpizza',
+          meal_cname: "牛肉披薩",
+          meal_name: "beefpizza",
           meal_price: 150,
-          meal_image_url: 'https://assets.tmecosys.com/image/upload/t_web600x528/img/recipe/vimdb/242141.jpg',
+          meal_image_url:
+            "https://assets.tmecosys.com/image/upload/t_web600x528/img/recipe/vimdb/242141.jpg",
         },
         {
-          meal_cname: '豬肉披薩',
-          meal_name: 'porkpizza',
+          meal_cname: "豬肉披薩",
+          meal_name: "porkpizza",
           meal_price: 130,
-          meal_image_url: 'https://assets.tmecosys.com/image/upload/t_web600x528/img/recipe/vimdb/242133.jpg',
+          meal_image_url:
+            "https://assets.tmecosys.com/image/upload/t_web600x528/img/recipe/vimdb/242133.jpg",
         },
       ],
     },
@@ -35,22 +39,22 @@ export const initialState = {
   //服務生固定4人
   waiter: [
     {
-      employee_id: '01'
+      employee_id: "01",
     },
     {
-      employee_id: '02'
+      employee_id: "02",
     },
     {
-      employee_id: '03'
+      employee_id: "03",
     },
     {
-      employee_id: '04'
+      employee_id: "04",
     },
   ],
   //shoppingbasket作用在local所以不用放db
   //點菜確定後將資料insert到collections(order).doc(uuid)
   shoppingbasket: {
-    meals: []
+    meals: [],
   },
   //Format A
   /*{
@@ -69,7 +73,8 @@ export const initialState = {
     tot_amount: 390,
     waiter: '01',
   },*/
-  desktop: [//因為單機固定九桌，這不放到db
+  desktop: [
+    //因為單機固定九桌，這不放到db
     //Format A
     /*{
       desktop_name: 1,
@@ -206,7 +211,7 @@ export const initialState = {
       pic_url: '',
     }*/
   ],
-  meals: []
+  meals: [],
 };
 
 const reducer = (state, action) => {
@@ -214,45 +219,58 @@ const reducer = (state, action) => {
   //console.log('redu')
   //console.log(action.payload)
   switch (action.type) {
-    case 'LOGIN':
+    case "LOGIN":
       return { ...state, currentUser: { ...action.payload } };
-    case 'LOGOUT':
+    case "LOGOUT":
       return { ...state, currentUser: {} };
-    case 'FOOD_ADD_PRODUCT':
-      return { ...state, shoppingbasket: { ...state.shoppingbasket, meals: [...state.shoppingbasket.meals, { ...action.payload }] } };
-    case 'FOOD_ADD_AMOUNT':
-      return { ...state, shoppingbasket: { ...state.shoppingbasket, tot_amount: action.payload } }
-    case 'ORDER_ADD_ORDER':
-      return { ...state, shoppingbasket: { meals: [] } }
-    case 'DESKTOP_SELECT':
-      return { ...state, selDesktop: action.payload }
-    case 'DESKTOP_ORDER': {
+    case "FOOD_ADD_PRODUCT":
+      return {
+        ...state,
+        shoppingbasket: {
+          ...state.shoppingbasket,
+          meals: [...state.shoppingbasket.meals, { ...action.payload }],
+        },
+      };
+    case "FOOD_ADD_AMOUNT":
+      return {
+        ...state,
+        shoppingbasket: { ...state.shoppingbasket, tot_amount: action.payload },
+      };
+    case "ORDER_ADD_ORDER":
+      return { ...state, shoppingbasket: { meals: [] } };
+    case "DESKTOP_SELECT":
+      return { ...state, selDesktop: action.payload };
+    case "DESKTOP_ORDER": {
       state.desktop.map((d) => {
         if (d.desktop_name === state.selDesktop) {
-          d.enabled = true
-          d.basket_number = action.payload
+          d.enabled = true;
+          d.basket_number = action.payload;
         }
-      })
+      });
       //return { ...state, desktop:[ ...state.desktop.filter(d=>d.desktop_name!=selDesktop), action.payload]}
-      return { ...state, selDesktop: 0 }
+      return { ...state, selDesktop: 0 };
     }
-    case 'DESKTOP_OVER_SEL':
-      return { ...state, selDesktop: 0, }
-    case 'CHECKOUT_SEL_ORDER':
-      return { ...state, order: [...action.payload] }
-    case 'CHECKOUT_A_ORDER': {
+    case "DESKTOP_OVER_SEL":
+      return { ...state, selDesktop: 0 };
+    case "CHECKOUT_SEL_ORDER":
+      return { ...state, order: [...action.payload] };
+    case "CHECKOUT_A_ORDER": {
       state.desktop.map((d) => {
         if (d.desktop_name === state.selDesktop) {
-          d.enabled = false
-          d.basket_number = false
+          d.enabled = false;
+          d.basket_number = false;
         }
-      })
-      return { ...state, selDesktop: 0, order: [] }
+      });
+      return { ...state, selDesktop: 0, order: [] };
     }
-    case 'QUESTION_INIT':
-      return { ...state, question: [...action.payload] }
+    case "QUESTION_INIT":
+      return { ...state, question: [...action.payload] };
+    case "QUESTION_UPDATE": {
+      state.question[action.payload.idx] = action.payload.data;
+      return { ...state };
+    }
     default:
-      return state
+      return state;
   }
 };
 
