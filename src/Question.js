@@ -14,16 +14,40 @@ function Question() {
   const history = useHistory();
 
   const handleUpload = async () => {
-    await question.map(({ pic_url }, index) => {
+    await question.map((q, index) => {
       //console.log(pic_url.match(/data:image\/jpeg;base64,(.*)/)[1]);
       storage
         .ref("/azurefaceapi")
         .child(`${basket_number}_${index}`)
-        .putString(pic_url.match(/data:image\/jpeg;base64,(.*)/)[1], "base64", {
+        .putString(q.pic_url.match(/data:image\/jpeg;base64,(.*)/)[1], "base64", {
           contentType: "image/jpg",
         })
         .then((snapshot) => {
           console.log(snapshot, "Uploaded a base64url string!");
+          storage
+          .ref(`/azurefaceapi/${basket_number}_${index}`).getDownloadURL()
+          .then((url) => {        
+            q.pic_url = url;
+            q.ai_value = 0;
+            q.ai_data = {};
+            q.ai_procdate = null;
+            //console.log(question);
+            db.collection("order")
+              .doc(basket_number)
+              .update({
+                question: q,
+              })
+              .then(() => {
+                dispatch({
+                  type: "QUESTION_INIT",
+                  payload: [],
+                });
+              })
+              .catch(function (error) {
+                // The document probably doesn't exist.
+                console.error("Error updating document: ", error);
+              });
+        })
         });
     });
     //return question_;
@@ -34,32 +58,7 @@ function Question() {
 
     //console.log(question_);
     handleUpload().then(() => {
-      console.log("after upload");
-      question.map((q, index) => {
-        q.pic_url = `${basket_number}_${index}`;
-        q.ai_value = 0;
-        q.ai_data = {};
-        q.ai_procdate = null;
-      });
-      //console.log(question);
-      db.collection("order")
-        .doc(basket_number)
-        .update({
-          question: question,
-        })
-        .then(() => {
-          dispatch({
-            type: "QUESTION_INIT",
-            payload: [],
-          });
-        })
-        .then(() => {
-          history.goBack();
-        })
-        .catch(function (error) {
-          // The document probably doesn't exist.
-          console.error("Error updating document: ", error);
-        });
+      history.goBack();
     });
   };
   return (

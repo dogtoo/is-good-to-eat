@@ -154,6 +154,7 @@ export const initialState = {
       tot_amount: 210,
       is_checkout: false,
       waiter: '01',
+      ai_date: firebase.datetime,
       question: [ //資料在結帳進填問卷畫面時，從db.collection(order).doc(uuid(1)).meals中產出
         {
           seq:1,
