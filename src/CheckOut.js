@@ -65,9 +65,10 @@ function CheckOut() {
       db.collection("order")
         .doc(basket_number)
         .update({
-          //is_checkout: true,
-          is_checkout: false,
+          is_checkout: true,
+          //is_checkout: false,
           question: question,
+          ai_date: null,
         })
         .then(() => {
           console.log("Document successfully updated!");

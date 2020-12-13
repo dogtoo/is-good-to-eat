@@ -22,7 +22,7 @@ function Questionnaire({ content, index }) {
         data: {
           ...question[index],
           value: fraction,
-          pic_url: imgSrc ? imgSrc : "",
+          pic_url: imgSrc ? imgSrc : "data:image/jpeg;base64,pic",
         },
       },
     });
