@@ -9,6 +9,7 @@ import { db } from "./firebase";
 
 function CheckOut() {
   const [{ order, selDesktop }, dispatch] = useStateValue();
+  const [isChoseDest, setIsChoseDest] = useState(false);
   const history = useHistory();
   let question = [];
   useEffect(() => {
@@ -34,6 +35,10 @@ function CheckOut() {
           console.log("Error getting documents: ", error);
         });
   }, [selDesktop]);
+  const handleSelDesktop = () => {
+    //e.preventDefault();
+    setIsChoseDest(isChoseDest ? false : true);
+  };
 
   const checkOut = () => {
     //console.log('checkout', order)
@@ -60,8 +65,8 @@ function CheckOut() {
       db.collection("order")
         .doc(basket_number)
         .update({
-          is_checkout: true,
-          //is_checkout: false,
+          //is_checkout: true,
+          is_checkout: false,
           question: question,
         })
         .then(() => {
@@ -87,29 +92,41 @@ function CheckOut() {
   };
   //console.log('orderValue', orderValue)
   return (
-    <div>
-      <div>
-        <Desktop />
+    <div className="checkout__container">
+      <div className="order__desktopselect" onClick={() => handleSelDesktop()}>
+        選擇桌號 {selDesktop ? "已選擇" + selDesktop : ""}
       </div>
+      {isChoseDest && <Desktop setIsChoseDest={() => handleSelDesktop()} />}
       {order?.map(({ tot_amount, meals, waiter }) => {
         return (
           <div>
-            <div>{tot_amount}</div>
+            <h3>{`服務員 ${waiter}`}</h3>
             {meals?.map(({ meal_name, meal_cname, meal_qty, meal_price }) => {
               return (
-                <div>
+                <div className="checkout__basketrow">
                   <div>{meal_name}</div>
                   <div>{meal_cname}</div>
-                  <div>{meal_qty}</div>
-                  <div>{meal_qty * meal_price}</div>
+                  <div className="checkout__basketnumber">{meal_qty}</div>
+                  <div className="checkout__basketnumber">
+                    {meal_qty * meal_price}
+                  </div>
                 </div>
               );
             })}
-            <div>{waiter}</div>
+            <div className="checkout__basketbottom">
+              <h3>總金額</h3>
+              <div>{tot_amount}</div>
+            </div>
           </div>
         );
       })}
-      <div onClick={() => checkOut()}>結帳💸</div>
+      {selDesktop ? (
+        <div className="checkout__basketbottom" onClick={() => checkOut()}>
+          結帳💸
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }

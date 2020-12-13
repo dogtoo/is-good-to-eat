@@ -1,27 +1,37 @@
-import React from 'react';
-import './Desktop.css';
-import { useStateValue } from '../Auth';
+import React from "react";
+import "./Desktop.css";
+import { useStateValue } from "../Auth";
 
-function Desktop() {
-  const [{ desktop, }, dispatch] = useStateValue();
+function Desktop({ setIsChoseDest }) {
+  const [{ desktop }, dispatch] = useStateValue();
   const setSelCheckOutDestop = (desktop_name) => {
-    dispatch(
-      {
-        type: 'DESKTOP_SELECT',
-        payload: desktop_name
-      }
-    )
-  }
+    dispatch({
+      type: "DESKTOP_SELECT",
+      payload: desktop_name,
+    });
+  };
+  const setIsChoseDest_ = () => {
+    setIsChoseDest.apply();
+  };
+
   return (
-    <div>
+    <div className="desktop__container">
       {desktop?.map(({ desktop_name, enabled, basket_number }) => {
         return (
-          <div key={desktop_name}>
-            <div onClick={() => setSelCheckOutDestop(desktop_name)}>{desktop_name} {enabled && 'order'}</div>
+          <div
+            className={enabled ? "desktop__order" : "desktop__number"}
+            key={desktop_name}
+            onClick={() => setSelCheckOutDestop(desktop_name)}
+          >
+            <div>{desktop_name}</div>
           </div>
-        )
+        );
       })}
-    </div>)
+      <div></div>
+      <div></div>
+      <div onClick={() => setIsChoseDest_()}>確認</div>
+    </div>
+  );
 }
 
 export default Desktop;

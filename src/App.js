@@ -5,6 +5,7 @@ import Order from "./Order";
 import CheckOut from "./CheckOut";
 import Question from "./Question";
 import Login from "./Login";
+import MealsAnalysis from "./MealsAnalysis";
 import AuthStateChanged from "./AuthStateChanged";
 
 import { AuthProvider } from "./Auth";
@@ -36,6 +37,12 @@ function App() {
             path="/question/:basket_number"
             component={Question}
             title="Question"
+          />
+          <PrivateRoute
+            exact
+            path="/mealsAnalysis"
+            component={MealsAnalysis}
+            title="MealsAnalysis"
           />
           <Route exact path="/login" component={Login} />
         </div>

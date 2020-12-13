@@ -12,7 +12,8 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "react-uuid": "^1.0.2",
-    "react-webcam": "^5.2.1"
+    "react-webcam": "^5.2.1",
+    "recharts": "^1.8.5"
   },
   "scripts": {
     "start": "PORT=32769 HTTPS=true react-scripts start",

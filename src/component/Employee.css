@@ -1,4 +1,4 @@
-.desktop__container {
+.employee__container {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -6,7 +6,7 @@
   height: 200px;
   transform: translate(-50%, -50%);
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
   border: 1px solid;
   border-color: black;
   border-radius: 5px;
@@ -14,25 +14,17 @@
   background: white;
 }
 
-.desktop__number {
+.employee__button {
+  text-align: right;
+}
+
+.employee__number {
   margin: 3px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   background: lightsteelblue;
-  border: 1px solid;
-  border-color: black;
-  border-radius: 5px;
-}
-
-.desktop__order {
-  margin: 3px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: lightyellow;
   border: 1px solid;
   border-color: black;
   border-radius: 5px;

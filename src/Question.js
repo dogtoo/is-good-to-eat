@@ -63,17 +63,18 @@ function Question() {
     });
   };
   return (
-    <div>
+    <div className="question__container">
       New Question
-      {testimg && <img className="order__imgShow" src={testimg} />}
-      {question?.map(({ content }, index) => {
-        return (
-          <div>
-            <Questionnaire content={content} index={index} />
-          </div>
-        );
-      })}
-      <div onClick={() => handleQuestion()}>送出💌</div>
+      <div className="question__content">
+        {question?.map(({ content }, index) => {
+          return (
+            <div className="question__row">
+              <Questionnaire content={content} index={index} />
+            </div>
+          );
+        })}
+        <div onClick={() => handleQuestion()}>送出💌</div>
+      </div>
     </div>
   );
 }

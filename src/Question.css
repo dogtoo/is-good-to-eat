@@ -1,0 +1,19 @@
+.question__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.question__content {
+  width: 800px;
+}
+
+.order__imgShow {
+  padding-right: 0;
+  background-color: lightyellow;
+}
+
+.question__row {
+  background-color: lightyellow;
+}

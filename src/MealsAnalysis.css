@@ -1,0 +1,25 @@
+.mealsAnalysis__container {
+  display: flex;
+  flex-direction: column;
+}
+
+.mealsAnalysis__search {
+  display: flex;
+}
+
+.mealsAnalysis__grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.mealsAnalysis__gridTitle {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1.5fr 1.5fr 1.5fr;
+  width: 100%;
+}
+
+.mealsAnalysis__gridRow {
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1.5fr 1.5fr 1.5fr;
+  width: 100%;
+}
