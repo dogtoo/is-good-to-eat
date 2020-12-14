@@ -12,13 +12,17 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
   // Add a valid subscription key and endpoint to your environment variables.
   let subscriptionKey = '2afb002a86874f1483f68d7d50fb0cc4'
   let endpoint = 'https://is-good-to-eat.cognitiveservices.azure.com' + '/face/v1.0/detect'
-  
+
   // Optionally, replace with your own image URL (for example a .jpg or .png URL).
   let imageUrl = ''
   let question_ = {};
+  const calculation = ({ anger, contempt, disgust, fear, happiness, neutral, sadness, surprise }) => {
+
+  }
+
   const queryQ = async (question, basket_number) => {
     return Promise.all(
-      question.map(async(q)=>{
+      question.map(async (q) => {
         imageUrl = q.pic_url;
         //console.log(imageUrl);
         try {
@@ -39,7 +43,7 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
           q.ai_value = 0;
           q.ai_procdate = new Date();
           q.ai_data = {};
-          response.data.map(({faceAttributes})=>{
+          response.data.map(({ faceAttributes }) => {
             /*
             "contempt": 鄙視
             "surprise": 吃驚
@@ -51,6 +55,10 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
             "fear": 恐懼
             */
             q.ai_data = faceAttributes;
+            faceAttributes.gender;
+            faceAttributes.age;
+            aivalue = calculation(faceAttributes)
+            console.log(faceAttributes);
           });
           question_[basket_number] = [...question_[basket_number], q];
         } catch (error) {
@@ -71,17 +79,17 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
       //console.log(docs.data().question.pic_url)      
       const basket_number = docs.data().basket_number;
       question_[basket_number] = [];
-      queryQ(docs.data().question, basket_number).then(()=>{
+      queryQ(docs.data().question, basket_number).then(() => {
         console.log(basket_number, 'need after axios', question_[basket_number].length);
         admin
-        .firestore()
-        .collection("order")
-        .doc(basket_number).update({
-          ai_date: new Date(),
-          question: question_[basket_number],
-        });
+          .firestore()
+          .collection("order")
+          .doc(basket_number).update({
+            //ai_date: new Date(),
+            question: question_[basket_number],
+          });
       });
-      
+
       /**/
     })
     response.send("Hello from Firebase!");
@@ -95,6 +103,6 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
       imageUrl = f[0].metadata.mediaLink;
     })
   });*/
-  
-  
+
+
 });
