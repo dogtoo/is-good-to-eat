@@ -263,6 +263,21 @@ export const initialState = {
     }*/
   ],
   meals: [],
+  /*
+  statistics: {
+    meals: {
+      beefburg:
+        {
+          qty:0
+          age:[0,0,0,0,0,0] // T1, T2, T3, T4, T5, T6
+          gender:[0,0] // men, female
+          aivalue: 0
+          question: 0
+        }
+      beefpizza:
+    }
+  }
+  */
 };
 
 const reducer = (state, action) => {
