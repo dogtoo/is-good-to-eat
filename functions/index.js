@@ -112,8 +112,8 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
             content = q.content.meal_name ? q.content.meal_name : q.content.waiter;
             contentName = q.content.meal_name ? 'meal' : 'waiter';
             q.ai_data = faceAttributes;
-            q.ai_value = calculation(faceAttributes.emotion)
-            console.log(faceAttributes.age);
+            q.ai_value = faceAttributes.emotion ? calculation(faceAttributes.emotion) : 0;
+            console.log(faceAttributes.emotion);
             let TN = 0;
             let age = faceAttributes ? parseInt(faceAttributes.age) : 20;
             if (age >= 20 && age < 30)
@@ -148,15 +148,20 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
               }
               statistics = { ...statistics, ...oj }
             }
-            //console.log(TN, 'statistics', statistics[content].age[TN], q.ai_value);
-            statistics[content].age[TN] = statistics[content].age[TN] + parseInt(q.value) + parseInt(q.ai_value);
-            statistics[content].ageQty[TN] = statistics[content].ageQty[TN] + 1;
-            statistics[content].aivalue = statistics[content].aivalue + parseInt(q.ai_value);
-            statistics[content].gender[gd] = statistics[content].gender[gd] + parseInt(q.value) + parseInt(q.ai_value);
-            statistics[content].genderQty[gd] = statistics[content].genderQty[gd] + 1;
-            statistics[content].qty = statistics[content].qty + 1;
-            statistics[content].question = statistics[content].question + parseInt(q.value);
-            statistics[content].content = contentName;
+            if (!/\d/.test(q.ai_value)) {
+              q.ai_value = 0;
+            }
+              console.log(TN, 'statistics', statistics[content].ageQty[TN], q.ai_value);
+              statistics[content].age[TN] = parseInt(statistics[content].age[TN]) + parseInt(q.value) + parseInt(q.ai_value);
+              statistics[content].ageQty[TN] = parseInt(statistics[content].ageQty[TN]) + 1;
+              statistics[content].aivalue = parseInt(statistics[content].aivalue) + parseInt(q.ai_value);
+              statistics[content].gender[gd] = parseInt(statistics[content].gender[gd]) + parseInt(q.value) + parseInt(q.ai_value);
+              statistics[content].genderQty[gd] = parseInt(statistics[content].genderQty[gd]) + 1;
+              statistics[content].qty = parseInt(statistics[content].qty) + 1;
+              statistics[content].question = parseInt(statistics[content].question) + parseInt(q.value);
+              statistics[content].content = contentName;
+            
+            
           });
           question_[basket_number][index] = q;
         } catch (error) {
@@ -181,7 +186,15 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
       console.log('begin queryQ', basket_number)
       queryQ(docs.data().question, basket_number).then(() => {
         console.log(basket_number, 'need after axios', question_[basket_number].length);
-        docs.ref.update({ question: question_[basket_number], ai_date: new Date() });
+        //console.log(question_)
+        
+        try {
+          docs.ref.update({ question: question_[basket_number], ai_date: new Date() });
+        }
+        catch (error){
+          docs.ref.update({ ai_date: new Date() }) 
+        }
+        
         /*await admin
           .firestore()
           .collection("order")
@@ -204,13 +217,13 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
               if (statistics[meal]) {
                 statistics[meal].age.map((T, index) => {
                   statistics[meal].age[index] = T + (meal_.age[index] ? parseInt(meal_.age[index]) : 0);
-                  statistics[meal].ageQty[index] = T + (meal_.ageQty[index] ? parseInt(meal_.ageQty[index]) : 0);
+                  statistics[meal].ageQty[index] = parseInt(statistics[meal].ageQty[index]) + (meal_.ageQty[index] ? parseInt(meal_.ageQty[index]) : 0);
                 })
                 statistics[meal].qty = statistics[meal].qty + meal_.qty;
                 statistics[meal].aivalue = statistics[meal].aivalue + meal_.aivalue;
                 statistics[meal].gender.map((G, index) => {
                   statistics[meal].gender[index] = G + (meal_.gender[index] ? parseInt(meal_.gender[index]) : 0);
-                  statistics[meal].genderQty[index] = G + (meal_.genderQty[index] ? parseInt(meal_.genderQty[index]) : 0);
+                  statistics[meal].genderQty[index] = parseInt(statistics[meal].genderQty[index]) + (meal_.genderQty[index] ? parseInt(meal_.genderQty[index]) : 0);
                 })
                 statistics[meal].question = statistics[meal].question + meal_.question;
               } else {
