@@ -2,7 +2,9 @@ import React, { useState, useEffect, PureComponent } from "react";
 import "./MealsAnalysis.css";
 import { useStateValue } from "./Auth";
 import {
-  BarChart, Bar, Cell,
+  BarChart,
+  Bar,
+  Cell,
   LineChart,
   Line,
   XAxis,
@@ -11,6 +13,8 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import "react-modern-calendar-datepicker/lib/DatePicker.css";
+import DatePicker from "react-modern-calendar-datepicker";
 
 import { db } from "./firebase";
 
@@ -25,99 +29,176 @@ function MealsAnalysis() {
   const [line, setLine] = useState([]);
   const [dataL, setDataL] = useState();
   const [dataA, setDataA] = useState();
-  let data_ = {};
-  let dataL_ = [];
-  let dataA_ = [];
+  const [strM, setStrM] = useState({
+    year: 2020,
+    month: 12,
+    day: 1,
+  });
+  const [endM, setEndM] = useState({
+    year: 2020,
+    month: 12,
+    day: 31,
+  });
   let line_ = [];
   useEffect(() => {
     db.collection("statistics")
-      //.where("my", ">=", "202012")
+      .where("my", ">=", `${strM.year}${strM.month}`)
+      .where("my", "<=", `${endM.year}${endM.month}`)
       .onSnapshot(
         (docSnapshot) => {
-          docSnapshot.docs.map((doc) => {
-            let meals = doc.data().meals;
-            let my = doc.data().my;
-            console.log('call snapshot')
-            Object.keys(meals).map((meal) => {
-              if (meals[meal].content != 'waiter') {
-                data_[meal] = {
-                  aivalue: data_[meal]?.aivalue
-                    ? data_[meal].aivalue
-                    : 0 + meals[meal].aivalue,
-                  question: data_[meal]?.question
-                    ? data_[meal].question
-                    : 0 + meals[meal].question,
-                };
-                dataL_.push({
-                  name: meal,
-                  men: meals[meal].genderQty[1] ? meals[meal].gender[1] / meals[meal].genderQty[1] : 0,
-                  female: meals[meal].genderQty[0] ? meals[meal].gender[0] / meals[meal].genderQty[0] : 0,
-                });
-                dataA_.push({
-                  name: meal,
-                  T1: meals[meal].ageQty[0] ? parseInt(meals[meal].age[0] / meals[meal].ageQty[0]) : 0,
-                  T2: meals[meal].ageQty[1] ? parseInt(meals[meal].age[1] / meals[meal].ageQty[1]) : 0,
-                  T3: meals[meal].ageQty[2] ? parseInt(meals[meal].age[2] / meals[meal].ageQty[2]) : 0,
-                  T4: meals[meal].ageQty[3] ? parseInt(meals[meal].age[3] / meals[meal].ageQty[3]) : 0,
-                  T5: meals[meal].ageQty[4] ? parseInt(meals[meal].age[4] / meals[meal].ageQty[4]) : 0,
-                  T6: meals[meal].ageQty[5] ? parseInt(meals[meal].age[5] / meals[meal].ageQty[5]) : 0,
-                  T7: meals[meal].ageQty[6] ? parseInt(meals[meal].age[6] / meals[meal].ageQty[6]) : 0,
-                });
-              }
-            });
-            line_.push({
-              name: my,
-            });
-          });
-          setData(data_);
-          setDataL(dataL_);
-          setDataA(dataA_);
+          setData(
+            docSnapshot.docs.map((doc) => {
+              let meals = doc.data().meals;
+              let my = doc.data().my;
+              let data_ = {};
+              let dataL_ = [];
+              let dataA_ = [];
+              //console.log("call snapshot");
+              Object.keys(meals).map((meal) => {
+                if (meals[meal].content != "waiter") {
+                  data_[meal] = {
+                    aivalue: data_[meal]?.aivalue
+                      ? data_[meal].aivalue
+                      : 0 + meals[meal].aivalue,
+                    question: data_[meal]?.question
+                      ? data_[meal].question
+                      : 0 + meals[meal].question,
+                  };
+                  dataL_.push({
+                    name: meal,
+                    men: meals[meal].genderQty[1]
+                      ? meals[meal].gender[1] / meals[meal].genderQty[1]
+                      : 0,
+                    female: meals[meal].genderQty[0]
+                      ? meals[meal].gender[0] / meals[meal].genderQty[0]
+                      : 0,
+                  });
+                  dataA_.push({
+                    name: meal,
+                    "~20": meals[meal].ageQty[0]
+                      ? parseInt(meals[meal].age[0] / meals[meal].ageQty[0])
+                      : 0,
+                    "20~29": meals[meal].ageQty[1]
+                      ? parseInt(meals[meal].age[1] / meals[meal].ageQty[1])
+                      : 0,
+                    "30~39": meals[meal].ageQty[2]
+                      ? parseInt(meals[meal].age[2] / meals[meal].ageQty[2])
+                      : 0,
+                    "40~49": meals[meal].ageQty[3]
+                      ? parseInt(meals[meal].age[3] / meals[meal].ageQty[3])
+                      : 0,
+                    "50~59": meals[meal].ageQty[4]
+                      ? parseInt(meals[meal].age[4] / meals[meal].ageQty[4])
+                      : 0,
+                    "60~": meals[meal].ageQty[5]
+                      ? parseInt(meals[meal].age[5] / meals[meal].ageQty[5])
+                      : 0,
+                  });
+                }
+              });
+              return {
+                grid: data_,
+                gender: dataL_,
+                age: dataA_,
+              };
+            })
+          );
+          /*docSnapshot.docs.map((doc) => {
+            
+            setData(data_);
+            setDataL(dataL_);
+            setDataA(dataA_);
+          });*/
         },
         (error) => {
           console.log("Error getting document", error);
         }
       );
-  }, [])
+  }, [db]);
 
+  const calendarInput = ({ ref }) => {
+    return (
+      <input
+        style={{ "z-index": "-1" }}
+        readOnly
+        ref={ref}
+        placeholder="select a Month"
+      />
+    );
+  };
 
   return (
-    <div>
-      <div>New MealsAnalysis</div>
-      <div className="mealsAnalysis__container">
+    <div className="mealsAnalysis__container">
+      <div className="mealsAnalysis__content">
         <div className="mealsAnalysis__search">
-          <div>strM</div>
-          to
-          <div>endM</div>
-        </div>
-        <div className="mealsAnalysis__grid">
-          <div className="mealsAnalysis__gridTitle">
-            <div>seq</div>
-            <div>mealsName</div>
-            <div>questionValue</div>
-            <div>aiValue</div>
-            <div>Weighted</div>
+          <div>
+            <span>strM</span>
+            <DatePicker
+              value={strM}
+              onChange={setStrM}
+              shouldHighlightWeekends
+              inputPlaceholder="select a Month"
+            />
           </div>
-
-          {data &&
-            Object.keys(data).map((k, index) => {
-              return (
-                <div key={index} className="mealsAnalysis__gridRow">
-                  <div>{index + 1}</div>
-                  <div>{k}</div>
-                  <div>{data[k].question}</div>
-                  <div>{data[k].aivalue}</div>
-                  <div>
-                    {data[k]?.question ? data[k].question + data[k].aivalue : 0}
-                  </div>
-                </div>
-              );
-            })}
+          <div>
+            <span>to</span>
+          </div>
+          <div>
+            <span>endM</span>
+            <DatePicker
+              value={endM}
+              onChange={setEndM}
+              shouldHighlightWeekends
+              inputPlaceholder="select a Month"
+            />
+          </div>
+        </div>
+        <div className="mealsAnalysis__analysisContent">
+          <div className="mealsAnalysis__grid mealsAnalysis__analysisContentItem">
+            <div className="mealsAnalysis__gridTitle">
+              <div>seq </div>
+              <div>mealsName</div>
+              <div>questionValue</div>
+              <div>aiValue</div>
+              <div>Weighted</div>
+            </div>
+            <div className="mealsAnalysis__gridContent">
+              {data[0]?.grid &&
+                Object.keys(data[0]?.grid).map((k, index) => {
+                  let meal = data[0].grid[k];
+                  if (meal.content != "waiter") {
+                    return (
+                      <div key={index} className="mealsAnalysis__gridRow">
+                        <div className="mealsAnalysis__gridRowCharacter">
+                          {index + 1}
+                        </div>
+                        <div className="mealsAnalysis__gridRowCharacter">
+                          {k}
+                        </div>
+                        <div className="mealsAnalysis__gridRowNumber">
+                          {meal.question}
+                        </div>
+                        <div className="mealsAnalysis__gridRowNumber">
+                          {meal.aivalue}
+                        </div>
+                        <div className="mealsAnalysis__gridRowNumber">
+                          {meal?.question ? meal.question + meal.aivalue : 0}
+                        </div>
+                      </div>
+                    );
+                  }
+                })}
+            </div>
+          </div>
           <BarChart
+            className="mealsAnalysis__analysisContentItem"
             width={500}
             height={300}
-            data={dataL}
+            data={data[0]?.gender}
             margin={{
-              top: 5, right: 30, left: 20, bottom: 5,
+              top: 20,
+              right: 30,
+              bottom: 5,
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
@@ -130,11 +211,14 @@ function MealsAnalysis() {
           </BarChart>
 
           <BarChart
+            className="mealsAnalysis__analysisContentItem"
             width={500}
             height={300}
-            data={dataA}
+            data={data[0]?.age}
             margin={{
-              top: 20, right: 30, left: 20, bottom: 5,
+              top: 20,
+              right: 30,
+              bottom: 5,
             }}
           >
             <CartesianGrid strokeDasharray="3 3" />
@@ -142,13 +226,12 @@ function MealsAnalysis() {
             <YAxis />
             <Tooltip />
             <Legend />
-            <Bar dataKey="T1" stackId="a" fill="#8884d8" />
-            <Bar dataKey="T2" stackId="a" fill="#82ca9d" />
-            <Bar dataKey="T3" stackId="a" fill="#00FFFF" />
-            <Bar dataKey="T4" stackId="a" fill="#5F9EA0" />
-            <Bar dataKey="T5" stackId="a" fill="#FF7F50" />
-            <Bar dataKey="T6" stackId="a" fill="#BDB76B" />
-            <Bar dataKey="T7" stackId="a" fill="#FF1493" />
+            <Bar dataKey="~20" stackId="a" fill="#8884d8" label="~19" />
+            <Bar dataKey="20~29" stackId="a" fill="#82ca9d" label="20~29" />
+            <Bar dataKey="30~39" stackId="a" fill="#00FFFF" label="30~39" />
+            <Bar dataKey="40~49" stackId="a" fill="#5F9EA0" label="40~49" />
+            <Bar dataKey="50~59" stackId="a" fill="#FF7F50" label="50~59" />
+            <Bar dataKey="60~" stackId="a" fill="#BDB76B" label="60~" />
           </BarChart>
         </div>
       </div>
