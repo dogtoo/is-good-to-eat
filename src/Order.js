@@ -61,15 +61,17 @@ function Order() {
         <div className="order__menulisttitle">菜單總類</div>
         <div className="order__menulistcontent">
           {Object.keys(menu).map((menu_name) => {
-            console.log('order', menu_name)
-            return (<div
-              className="order__menulistrow"
-              onClick={(e) => {
-                handle_menu_chick(menu_name);
-              }}
-            >
-              {menu_name}
-            </div>)
+            //console.log('order', menu_name)
+            return (
+              <div
+                className="order__menulistrow"
+                onClick={(e) => {
+                  handle_menu_chick(menu_name);
+                }}
+              >
+                {menu_name}
+              </div>
+            );
           })}
         </div>
       </div>
@@ -126,7 +128,7 @@ function Order() {
           菜單確認
         </button>
       </div>
-    </div >
+    </div>
   );
 }
 

@@ -3,12 +3,27 @@
   flex-direction: column;
   align-items: center;
   margin-top: 20px;
+  margin-left: 200px;
+  margin-right: 200px;
 }
 
 .question__content {
-  width: 800px;
+  width: 100%;
 }
 
+@media screen and (max-width: 550px) {
+  .question__container {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+}
+
+@media screen and (min-width: 550px) and (max-width: 1000px) {
+  .question__container {
+    margin-left: 50px;
+    margin-right: 50px;
+  }
+}
 .order__imgShow {
   padding-right: 0;
   background-color: lightyellow;

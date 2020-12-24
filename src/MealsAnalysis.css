@@ -127,6 +127,7 @@
     display: grid;
     grid-template-columns: 1fr;
     background-color: rgb(255, 255, 245);
+    width: 450px;
   }
 
   .mealsAnalysis__content {
@@ -143,10 +144,8 @@
     padding-bottom: 10px;
     padding-top: 10px;
     height: 300px;
+    width: 450px;
   }
-}
-
-@media screen and (max-width: 800px) {
 }
 
 .mealsAnalysis__analysisContentItem {

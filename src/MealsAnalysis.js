@@ -192,7 +192,7 @@ function MealsAnalysis() {
           </div>
           <BarChart
             className="mealsAnalysis__analysisContentItem"
-            width={500}
+            width={450}
             height={300}
             data={data[0]?.gender}
             margin={{
@@ -212,7 +212,7 @@ function MealsAnalysis() {
 
           <BarChart
             className="mealsAnalysis__analysisContentItem"
-            width={500}
+            width={450}
             height={300}
             data={data[0]?.age}
             margin={{

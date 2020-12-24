@@ -87,6 +87,9 @@
   .order__content {
     grid-template-columns: repeat(1, 1fr);
   }
+  .order__container {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
 }
 @media screen and (min-width: 1000px) and (max-width: 1200px) {
   .order__content {

@@ -12,6 +12,20 @@
   background-color: lightyellow;
 }
 
+@media screen and (max-width: 550px) {
+  .checkout__container {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+}
+
+@media screen and (min-width: 550px) and (max-width: 1000px) {
+  .checkout__container {
+    margin-left: 50px;
+    margin-right: 50px;
+  }
+}
+
 .order__desktopselect {
   padding-bottom: 10px;
 }
