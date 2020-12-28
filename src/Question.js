@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useHistory, useParams } from "react-router-dom";
 import "./Question.css";
 import { useStateValue } from "./Auth";
@@ -9,8 +9,6 @@ import { db, storage } from "./firebase";
 function Question() {
   const { basket_number } = useParams();
   const [{ question }, dispatch] = useStateValue();
-  const [testimg, setTestimg] = useState();
-  //console.log("basket_number", basket_number);
   const history = useHistory();
 
   const handleUpload = async () => {
@@ -60,6 +58,7 @@ function Question() {
               //}
             });
         });
+      return 1;
     });
   };
 

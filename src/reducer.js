@@ -314,6 +314,7 @@ const reducer = (state, action) => {
           d.enabled = true;
           d.basket_number = action.payload;
         }
+        return 0;
       });
       //return { ...state, desktop:[ ...state.desktop.filter(d=>d.desktop_name!=selDesktop), action.payload]}
       return { ...state, selDesktop: 0 };
@@ -328,6 +329,7 @@ const reducer = (state, action) => {
           d.enabled = false;
           d.basket_number = false;
         }
+        return 0;
       });
       return { ...state, selDesktop: 0, order: [] };
     }

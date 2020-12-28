@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, Redirect, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import "./CheckOut.css";
 import { useStateValue } from "./Auth";
 
@@ -52,6 +52,7 @@ function CheckOut() {
             pic_url: "",
           },
         ];
+        return 0;
       });
       question = [
         ...question,
@@ -89,6 +90,7 @@ function CheckOut() {
           // The document probably doesn't exist.
           console.error("Error updating document: ", error);
         });
+      return 0;
     });
   };
   //console.log('orderValue', orderValue)
@@ -97,7 +99,12 @@ function CheckOut() {
       <div className="order__desktopselect" onClick={() => handleSelDesktop()}>
         選擇桌號 {selDesktop ? "已選擇" + selDesktop : ""}
       </div>
-      {isChoseDest && <Desktop setIsChoseDest={() => handleSelDesktop()} />}
+      {isChoseDest && (
+        <Desktop
+          setIsChoseDest={() => handleSelDesktop()}
+          choseModel={`ture`}
+        />
+      )}
       {order?.map(({ tot_amount, meals, waiter }) => {
         return (
           <div>

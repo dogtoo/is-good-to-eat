@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Route, Redirect } from "react-router-dom";
 //import { AuthContext } from "./Auth";
-import { useStateValue } from './Auth';
+import { useStateValue } from "./Auth";
 import Header from "./component/Header";
 
 function PrivateRoute({ component: RouteComponent, ...rest }) {
-  const [{ currentUser, selDesktop }, dispatch] = useStateValue();
+  const [{ currentUser }] = useStateValue();
   //const { currentUser } = useContext(AuthContext);
   return (
     <Route
@@ -17,12 +17,12 @@ function PrivateRoute({ component: RouteComponent, ...rest }) {
             <RouteComponent {...routeProps} />
           </div>
         ) : (
-            <Redirect
-              to={{
-                pathname: "/login" /*, state: { dogfrom: routeProps.location }*/,
-              }}
-            />
-          )
+          <Redirect
+            to={{
+              pathname: "/login" /*, state: { dogfrom: routeProps.location }*/,
+            }}
+          />
+        )
       }
     ></Route>
   );

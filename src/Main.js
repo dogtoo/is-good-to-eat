@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./Main.css";
 
 import { Link } from "react-router-dom";
+import { useStateValue } from "./Auth";
 
 function Main() {
+  const [{}, dispatch] = useStateValue();
+  useEffect(() => {
+    dispatch({
+      type: "DESKTOP_SELECT",
+      payload: null,
+    });
+  }, []);
   return (
     <div className="main__container">
       <div className="main__itemlink">

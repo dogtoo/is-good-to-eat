@@ -1,29 +1,27 @@
-import React from 'react';
-import {useState, useEffect} from 'react';
+import React from "react";
+import { useState, useEffect } from "react";
 import { auth } from "./firebase";
-import { useStateValue } from './Auth';
-
+import { useStateValue } from "./Auth";
 
 function AuthStateChanged() {
-    const [{currentUser}, dispatch] = useStateValue();
-    const [pending, setPending] = useState(true);
+  const [{}, dispatch] = useStateValue();
+  const [pending, setPending] = useState(true);
 
-    useEffect(() => {
-        auth.onAuthStateChanged((user) => {
-        dispatch({
-            type: 'LOGIN',
-            payload: user,
-        })
-        setPending(false);
-        });
-    }, []);
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      dispatch({
+        type: "LOGIN",
+        payload: user,
+      });
+      setPending(false);
+    });
+  }, []);
 
-    if (pending) {
-        return <>Loading...</>;
-    }
+  if (pending) {
+    return <>Loading...</>;
+  }
 
-    return (<div>
-    </div>)
+  return <div></div>;
 }
 
 export default AuthStateChanged;

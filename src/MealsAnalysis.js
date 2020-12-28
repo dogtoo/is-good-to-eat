@@ -1,12 +1,12 @@
-import React, { useState, useEffect, PureComponent } from "react";
+import React, { useState, useEffect } from "react";
 import "./MealsAnalysis.css";
-import { useStateValue } from "./Auth";
+//import { useStateValue } from "./Auth";
 import {
   BarChart,
   Bar,
-  Cell,
-  LineChart,
-  Line,
+  //Cell,
+  //LineChart,
+  //Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -26,9 +26,9 @@ function MealsAnalysis() {
   ];*/
 
   const [data, setData] = useState({});
-  const [line, setLine] = useState([]);
+  /*const [line, setLine] = useState([]);
   const [dataL, setDataL] = useState();
-  const [dataA, setDataA] = useState();
+  const [dataA, setDataA] = useState();*/
   const [strM, setStrM] = useState({
     year: 2020,
     month: 12,
@@ -39,7 +39,7 @@ function MealsAnalysis() {
     month: 12,
     day: 31,
   });
-  let line_ = [];
+  //let line_ = [];
   useEffect(() => {
     db.collection("statistics")
       .where("my", ">=", `${strM.year}${strM.month}`)
@@ -49,13 +49,13 @@ function MealsAnalysis() {
           setData(
             docSnapshot.docs.map((doc) => {
               let meals = doc.data().meals;
-              let my = doc.data().my;
+              //let my = doc.data().my;
               let data_ = {};
               let dataL_ = [];
               let dataA_ = [];
               //console.log("call snapshot");
               Object.keys(meals).map((meal) => {
-                if (meals[meal].content != "waiter") {
+                if (meals[meal].content !== "waiter") {
                   data_[meal] = {
                     aivalue: data_[meal]?.aivalue
                       ? data_[meal].aivalue
@@ -95,6 +95,7 @@ function MealsAnalysis() {
                       : 0,
                   });
                 }
+                return 0;
               });
               return {
                 grid: data_,
@@ -116,7 +117,7 @@ function MealsAnalysis() {
       );
   }, [db]);
 
-  const calendarInput = ({ ref }) => {
+  /*const calendarInput = ({ ref }) => {
     return (
       <input
         style={{ "z-index": "-1" }}
@@ -125,7 +126,7 @@ function MealsAnalysis() {
         placeholder="select a Month"
       />
     );
-  };
+  };*/
 
   return (
     <div className="mealsAnalysis__container">
@@ -166,7 +167,7 @@ function MealsAnalysis() {
               {data[0]?.grid &&
                 Object.keys(data[0]?.grid).map((k, index) => {
                   let meal = data[0].grid[k];
-                  if (meal.content != "waiter") {
+                  if (meal.content !== "waiter") {
                     return (
                       <div key={index} className="mealsAnalysis__gridRow">
                         <div className="mealsAnalysis__gridRowCharacter">
@@ -187,6 +188,7 @@ function MealsAnalysis() {
                       </div>
                     );
                   }
+                  return 0;
                 })}
             </div>
           </div>

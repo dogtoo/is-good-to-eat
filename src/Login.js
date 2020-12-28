@@ -1,13 +1,13 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import "./Login.css";
-import { useLocation, Redirect, useHistory } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import { auth } from "./firebase";
 //import { AuthContext } from "./Auth";
-import { useStateValue } from './Auth';
+import { useStateValue } from "./Auth";
 
 function Login() {
   const history = useHistory();
-  let location = useLocation();
+  //let location = useLocation();
   const [email, setEmail] = useState("");
   const [passwd, setPasswd] = useState("");
   const [{ currentUser }, dispatch] = useStateValue();
@@ -18,9 +18,9 @@ function Login() {
       .signInWithEmailAndPassword(email, passwd)
       .then((UserCredential) => {
         dispatch({
-          type: 'LOGIN',
+          type: "LOGIN",
           payload: UserCredential.user,
-        })
+        });
         history.push("/");
       })
       .catch((error) => alert(error.message));
