@@ -49,10 +49,13 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
       if (sadness > 0.1) return 1;
       if (contempt > 0.1) return 1;
       if (surprise > 0.1) return 1;
+      if (happiness > 0.1) return 1;
     } else if (neutral < 0.5) {
       if (sadness > 0.1) return -1;
       if (contempt > 0.1) return -1;
       if (surprise > 0.1) return -1;
+      if (happiness >= 0.4) return 2;
+      if (happiness < 0.4) return 1;
     } else return 0;
   };
 
