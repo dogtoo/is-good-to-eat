@@ -28,7 +28,6 @@ function Login() {
 
   const signUp = (e) => {
     e.preventDefault();
-    alert(auth);
     auth.createUserWithEmailAndPassword(email, passwd).then((auth) => {
       if (auth) {
         history.push("/");

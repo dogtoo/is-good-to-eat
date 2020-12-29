@@ -35,3 +35,8 @@
   justify-items: center;
   grid-gap: 5px;
 }
+
+.questionnaire__imgShow {
+  width: 50px;
+  object-fit: contain;
+}

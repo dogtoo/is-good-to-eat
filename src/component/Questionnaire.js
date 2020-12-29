@@ -48,7 +48,7 @@ function Questionnaire({ content, index }) {
         screenshotFormat="image/jpeg"
         videoConstraints={videoConstraints}
       />
-      {/*imgSrc && <img className="order__imgShow" src={imgSrc} />*/}
+      {imgSrc && <img className="questionnaire__imgShow" src={imgSrc} />}
       <div className="questionnaire__context">
         請給 {Object.values(content)} 個分數
       </div>

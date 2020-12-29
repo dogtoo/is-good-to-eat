@@ -13,61 +13,12 @@ export const initialState = {
           meal_image_url:
             "https://img.ltn.com.tw/Upload/food/page/2017/01/01/170101-5076-0-CGh2b.jpg",
         },
-        {
-          meal_cname: "牛肉漢堡",
-          meal_name: "beefburg",
-          meal_price: 60,
-          meal_image_url:
-            "https://img.ltn.com.tw/Upload/food/page/2017/01/01/170101-5076-0-CGh2b.jpg",
-        },
-        {
-          meal_cname: "牛肉漢堡",
-          meal_name: "beefburg",
-          meal_price: 60,
-          meal_image_url:
-            "https://img.ltn.com.tw/Upload/food/page/2017/01/01/170101-5076-0-CGh2b.jpg",
-        },
-        {
-          meal_cname: "牛肉漢堡",
-          meal_name: "beefburg",
-          meal_price: 60,
-          meal_image_url:
-            "https://img.ltn.com.tw/Upload/food/page/2017/01/01/170101-5076-0-CGh2b.jpg",
-        },
       ],
     },
     pizza: {
       menu_name: "pizza",
       menu_cname: "披薩",
       meals: [
-        {
-          meal_cname: "牛肉披薩",
-          meal_name: "beefpizza",
-          meal_price: 150,
-          meal_image_url:
-            "https://assets.tmecosys.com/image/upload/t_web600x528/img/recipe/vimdb/242141.jpg",
-        },
-        {
-          meal_cname: "豬肉披薩",
-          meal_name: "porkpizza",
-          meal_price: 130,
-          meal_image_url:
-            "https://assets.tmecosys.com/image/upload/t_web600x528/img/recipe/vimdb/242133.jpg",
-        },
-        {
-          meal_cname: "牛肉披薩",
-          meal_name: "beefpizza",
-          meal_price: 150,
-          meal_image_url:
-            "https://assets.tmecosys.com/image/upload/t_web600x528/img/recipe/vimdb/242141.jpg",
-        },
-        {
-          meal_cname: "豬肉披薩",
-          meal_name: "porkpizza",
-          meal_price: 130,
-          meal_image_url:
-            "https://assets.tmecosys.com/image/upload/t_web600x528/img/recipe/vimdb/242133.jpg",
-        },
         {
           meal_cname: "牛肉披薩",
           meal_name: "beefpizza",
