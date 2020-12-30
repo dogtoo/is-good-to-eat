@@ -28,12 +28,16 @@ function Order() {
     setMenuchose(cm);
   };
   const hanleMeals = () => {
+    if (selDesktop === null || selDesktop === 0) return alert("請選擇桌號");
+    if (selWaiter === null || selWaiter === 0) return alert("請選擇服務生");
+    if (shoppingbasket?.meals?.length === 0) return alert("請選擇餐點");
+    console.log("selDesktop:", selDesktop);
     shoppingbasket.order_date = new Date();
     shoppingbasket.basket_number = uuid();
     shoppingbasket.desktop_name = selDesktop;
     shoppingbasket.waiter = selWaiter;
     shoppingbasket.is_checkout = false;
-
+    let tot = shoppingbasket.tot_amount;
     db.collection("order")
       .doc(shoppingbasket.basket_number)
       .set({
@@ -50,6 +54,7 @@ function Order() {
             basket_number: shoppingbasket.basket_number,
           },
         });
+        alert(`餐點確認，總金額:${tot}`);
       })
       .catch(function (error) {
         console.error("Error writing document: ", error);

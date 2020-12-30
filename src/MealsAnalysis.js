@@ -29,21 +29,33 @@ function MealsAnalysis() {
   /*const [line, setLine] = useState([]);
   const [dataL, setDataL] = useState();
   const [dataA, setDataA] = useState();*/
+  let D = new Date();
+  let y = D.getFullYear();
+  let m = D.getMonth() + 1;
   const [strM, setStrM] = useState({
-    year: 2020,
-    month: 12,
+    year: y,
+    month: m,
     day: 1,
   });
   const [endM, setEndM] = useState({
-    year: 2020,
-    month: 12,
+    year: y,
+    month: m,
     day: 31,
   });
   //let line_ = [];
   useEffect(() => {
     db.collection("statistics")
-      .where("my", ">=", `${strM.year}${strM.month}`)
-      .where("my", "<=", `${endM.year}${endM.month}`)
+      .where(
+        "my",
+        "<=",
+        parseInt(`${endM.year}${endM.month.toString().padStart(2, "0")}`)
+      )
+      .where(
+        "my",
+        ">=",
+        parseInt(`${strM.year}${strM.month.toString().padStart(2, "0")}`)
+      )
+
       .onSnapshot(
         (docSnapshot) => {
           setData(
@@ -115,7 +127,7 @@ function MealsAnalysis() {
           console.log("Error getting document", error);
         }
       );
-  }, [db]);
+  }, [db, strM, endM]);
 
   /*const calendarInput = ({ ref }) => {
     return (
