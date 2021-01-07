@@ -15,10 +15,10 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
     "https://is-good-to-eat.cognitiveservices.azure.com" + "/face/v1.0/detect";
 
   // Optionally, replace with your own image URL (for example a .jpg or .png URL).
-  let imageUrl = "";
   let question_ = {};
   let statistics = {};
-  let content = "";
+  //let content = "";
+  let waitCount = 0;
   const calculation = ({
     anger,
     contempt,
@@ -59,12 +59,94 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
     } else return 0;
   };
 
+  const calculationStat = (q, faceAttributes) => {
+    let content = q.content.meal_name
+      ? q.content.meal_name
+      : q.content.waiter;
+    let contentName = q.content.meal_name ? "meal" : "waiter";
+    q.ai_data = faceAttributes;
+    q.ai_value = faceAttributes && faceAttributes.emotion
+      ? calculation(faceAttributes.emotion)
+      : 0;
+    //console.log(faceAttributes.emotion);
+    let TN = 0;
+    let age = faceAttributes ? parseInt(faceAttributes.age) : 60;
+    if (age >= 20 && age < 30) TN = 1;
+    else if (age >= 30 && age < 40) TN = 2;
+    else if (age >= 40 && age < 50) TN = 3;
+    else if (age >= 50 && age < 60) TN = 4;
+    else if (age >= 60) TN = 5;
+    else TN = 0;
+
+    let gd = 0;
+    if (faceAttributes && faceAttributes.gender === "male") gd = 1;
+
+    if (!statistics[content]) {
+      let oj = {};
+      oj[content] = {
+        age: [0, 0, 0, 0, 0, 0],
+        ageQty: [0, 0, 0, 0, 0, 0],
+        aivalue: 0,
+        gender: [0, 0],
+        genderQty: [0, 0],
+        qty: 0,
+        question: 0,
+        content: contentName,
+      };
+      statistics = { ...statistics, ...oj };
+    }
+    if (!/\d/.test(q.ai_value)) {
+      q.ai_value = 0;
+    }
+    if (!/\d/.test(q.value)) {
+      q.value = 0;
+    }
+
+    /*console.log(
+      `statistics bef ${TN} ${content}=> {
+        age:${statistics[content].age[TN]}
+        ageQty:${statistics[content].ageQty[TN]}
+      }`);*/
+    statistics[content].age[TN] =
+      parseInt(statistics[content].age[TN]) +
+      parseInt(q.value) +
+      parseInt(q.ai_value);
+    statistics[content].ageQty[TN] =
+      parseInt(statistics[content].ageQty[TN]) + 1;
+    statistics[content].aivalue =
+      parseInt(statistics[content].aivalue) + parseInt(q.ai_value);
+    statistics[content].gender[gd] =
+      parseInt(statistics[content].gender[gd]) +
+      parseInt(q.value) +
+      parseInt(q.ai_value);
+    statistics[content].genderQty[gd] =
+      parseInt(statistics[content].genderQty[gd]) + 1;
+    statistics[content].qty = parseInt(statistics[content].qty) + 1;
+    statistics[content].question =
+      parseInt(statistics[content].question) + parseInt(q.value);
+    statistics[content].content = contentName;
+
+    /*console.log(
+      `statistics aft ${TN} ${content}=> {
+        age:${statistics[content].age[TN]}
+        ageQty:${statistics[content].ageQty[TN]},
+        value:${q.value},
+        ai_value:${q.ai_value}
+      }`);*/
+  }
+
   const queryQ = async (question, basket_number) => {
     return Promise.all(
       question.map(async (q, index) => {
-        imageUrl = q.pic_url;
+        q.ai_value = 0;
+        q.ai_procdate = new Date();
+        q.ai_data = {};
+        waitCount = waitCount + 1;
+        console.log('query index:', index, 'waitTime:', 1000 * waitCount);
+        await new Promise(r => setTimeout(r, 1000 * waitCount));
         try {
-          console.log(basket_number, "run imageUrl", index, content);
+          let imageUrl = q.pic_url;
+          console.log(basket_number, "run imageUrl", index, new Date());
           const response = await axios({
             method: "post",
             url: endpoint,
@@ -79,6 +161,7 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
             },
             headers: { "Ocp-Apim-Subscription-Key": subscriptionKey },
           });
+          console.log("call back:", new Date());
           //console.log(response.data[0]);
           response.data[0] &&
             console.log(
@@ -87,106 +170,42 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
               index,
               response.data[0].faceAttributes.age
             );
-
-          q.ai_value = 0;
-          q.ai_procdate = new Date();
-          q.ai_data = {};
           //let meal_name = q.content.meal_name;
           response.data.map(({ faceAttributes }) => {
-            /*
-            age:22,
-            blur: {
-              blurLevel:"low",
-              value:0,
-            },
-            emotion: {
-              anger:0.001,
-              contempt:0.023,
-              disgust:0.001,
-              fear:0,
-              happiness:0.001,
-              neutral:0.651,
-              sadness:0.324,
-              surprise:0,
-            exposure: {
-              exposureLevel:"overExposure",
-              value:0.78,
-              gender:"male",
-            },
-            noise: {
-              noiseLevel:"low",
-              value:0,
-            },
-            smile:0.001,
-            */
-            //console.log(faceAttributes);
-            content = q.content.meal_name
-              ? q.content.meal_name
-              : q.content.waiter;
-            contentName = q.content.meal_name ? "meal" : "waiter";
-            q.ai_data = faceAttributes;
-            q.ai_value = faceAttributes.emotion
-              ? calculation(faceAttributes.emotion)
-              : 0;
-            console.log(faceAttributes.emotion);
-            let TN = 0;
-            let age = faceAttributes ? parseInt(faceAttributes.age) : 20;
-            if (age >= 20 && age < 30) TN = 1;
-            else if (age >= 30 && age < 40) TN = 2;
-            else if (age >= 40 && age < 50) TN = 3;
-            else if (age >= 50 && age < 60) TN = 4;
-            else if (age > 60) TN = 5;
-            else TN = 0;
-
-            let gd = 0;
-            if (faceAttributes && faceAttributes.gender === "male") gd = 1;
-
-            if (!statistics[content]) {
-              let oj = {};
-              oj[content] = {
-                age: [0, 0, 0, 0, 0, 0],
-                ageQty: [0, 0, 0, 0, 0, 0],
-                aivalue: 0,
-                gender: [0, 0],
-                genderQty: [0, 0],
-                qty: 0,
-                question: 0,
-                content: contentName,
-              };
-              statistics = { ...statistics, ...oj };
-            }
-            if (!/\d/.test(q.ai_value)) {
-              q.ai_value = 0;
-            }
-            console.log(
-              TN,
-              "statistics",
-              statistics[content].ageQty[TN],
-              q.ai_value
-            );
-            statistics[content].age[TN] =
-              parseInt(statistics[content].age[TN]) +
-              parseInt(q.value) +
-              parseInt(q.ai_value);
-            statistics[content].ageQty[TN] =
-              parseInt(statistics[content].ageQty[TN]) + 1;
-            statistics[content].aivalue =
-              parseInt(statistics[content].aivalue) + parseInt(q.ai_value);
-            statistics[content].gender[gd] =
-              parseInt(statistics[content].gender[gd]) +
-              parseInt(q.value) +
-              parseInt(q.ai_value);
-            statistics[content].genderQty[gd] =
-              parseInt(statistics[content].genderQty[gd]) + 1;
-            statistics[content].qty = parseInt(statistics[content].qty) + 1;
-            statistics[content].question =
-              parseInt(statistics[content].question) + parseInt(q.value);
-            statistics[content].content = contentName;
+            {/*
+              age:22,
+              blur: {
+                blurLevel:"low",
+                value:0,
+              },
+              emotion: {
+                anger:0.001,
+                contempt:0.023,
+                disgust:0.001,
+                fear:0,
+                happiness:0.001,
+                neutral:0.651,
+                sadness:0.324,
+                surprise:0,
+              exposure: {
+                exposureLevel:"overExposure",
+                value:0.78,
+                gender:"male",
+              },
+              noise: {
+                noiseLevel:"low",
+                value:0,
+              },
+              smile:0.001,
+              */}
+            calculationStat(q, faceAttributes);
           });
-          question_[basket_number][index] = q;
         } catch (error) {
-          console.log(error);
+          console.log(basket_number, 'on error: ');
+          calculationStat(q, null);
         }
+        question_[basket_number][index] = q;
+
       })
     );
   };
@@ -196,6 +215,7 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
     .collection("order")
     .where("is_checkout", "==", true)
     .where("ai_date", "==", null)
+    .limit(5)
     .get();
   promise.then((snapshot) => {
     snapshot.forEach((docs) => {
@@ -220,7 +240,6 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
           } catch (error) {
             docs.ref.update({ ai_date: new Date() });
           }
-
           /*await admin
           .firestore()
           .collection("order")
@@ -232,10 +251,14 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
         })
         .then(() => {
           console.log("after queryQ", basket_number);
+          //console.log(statistics);
+          let D = new Date();
+          let y = D.getFullYear();
+          let m = (D.getMonth() + 1);
           const p = admin
             .firestore()
             .collection("statistics")
-            .where("my", "==", "202012")
+            .where("my", "==", parseInt(`${y}${m.toString().padStart(2, "0")}`))
             .get();
           p.then((snapshot) => {
             snapshot.forEach((docs_stat) => {
@@ -268,17 +291,23 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
                   statistics[meal] = meal_;
                 }
               });
-              console.log("statistics", statistics);
               docs_stat.ref.update({ meals: { ...statistics } });
             });
+            statistics = {};
           });
         });
 
       /**/
     });
+  }).then(() => {
+    let D = new Date();
+    let y = D.getFullYear();
+    let m = (D.getMonth() + 1);
+    let d = D.getDate();
+    response.send(`${y} ${m} ${d} Finish question ${Object.keys(question_).join(", ")}`);
   });
-  console.log("after promise");
-  response.send("Hello from Firebase!");
+  //console.log("after promise");
+
   //const bucket = admin.storage().bucket();
 
   /*bucket.getFiles().then(function (data) {
@@ -287,6 +316,27 @@ exports.batchAzure = functions.https.onRequest((request, response) => {
       imageUrl = f[0].metadata.mediaLink;
     })
   });*/
+});
+
+exports.updateAll = functions.https.onRequest((request, response) => {
+  const promise = admin
+    .firestore()
+    .collection("order")
+    .where("is_checkout", "==", true)
+    .get();
+  promise.then((snapshot) => {
+    snapshot.forEach((docs) => {
+      const basket_number = docs.data().basket_number;
+      console.log(basket_number);
+      docs.ref.update({ ai_date: null });
+    });
+  }).then(() => {
+    let D = new Date();
+    let y = D.getFullYear();
+    let m = (D.getMonth() + 1);
+    let d = D.getDate();
+    response.send(`${y} ${m} ${d} Finish updateAll`);
+  });
 });
 
 /*測試用
