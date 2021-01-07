@@ -23,7 +23,7 @@ function App() {
     >
       <Router>
         <div>
-          <AuthStateChanged />
+          {/*<AuthStateChanged />*/}
           <PrivateRoute exact path="/" component={Main} title="Main" />
           <PrivateRoute exact path="/order" component={Order} title="Order" />
           <PrivateRoute

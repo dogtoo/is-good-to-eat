@@ -33,8 +33,8 @@ function MealsAnalysis() {
   let y = D.getFullYear();
   let m = D.getMonth() + 1;
   const [strM, setStrM] = useState({
-    year: y,
-    month: m,
+    year: 2020,
+    month: 12,
     day: 1,
   });
   const [endM, setEndM] = useState({

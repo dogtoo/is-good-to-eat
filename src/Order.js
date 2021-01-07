@@ -6,6 +6,7 @@ import { useStateValue } from "./Auth";
 import Food from "./component/Food";
 import Desktop from "./component/Desktop";
 import Employee from "./component/Employee";
+import Recommend from "./component/Recommend";
 
 import { db } from "./firebase";
 
@@ -17,12 +18,16 @@ function Order() {
   const [menuchose, setMenuchose] = useState("hamburg");
   const [isChoseDest, setIsChoseDest] = useState(false);
   const [isChoseEmployee, setIsChoseEmployee] = useState(false);
+  const [isChoseRecommend, setIsChoseRecommend] = useState(false);
   const handleSelDesktop = () => {
     //e.preventDefault();
     setIsChoseDest(isChoseDest ? false : true);
   };
   const handleSelWaiter = () => {
     setIsChoseEmployee(isChoseEmployee ? false : true);
+  };
+  const handleSelRecommend = () => {
+    setIsChoseRecommend(isChoseRecommend ? false : true);
   };
   const handle_menu_chick = (cm) => {
     setMenuchose(cm);
@@ -96,6 +101,12 @@ function Order() {
             </div>
             {isChoseEmployee && (
               <Employee setIsChoseEmployee={() => handleSelWaiter()} />
+            )}
+          </div>
+          <div>
+            <div onClick={() => handleSelRecommend()}>推薦</div>
+            {isChoseRecommend && (
+              <Recommend setIsChoseRecommend={() => handleSelRecommend()} />
             )}
           </div>
         </div>
