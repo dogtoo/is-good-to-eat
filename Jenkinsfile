@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'node:14.15.4' 
-            args '-p 32769:32769' 
+            args '-p 32769:32769 -u root' 
         }
     }
     stages {
