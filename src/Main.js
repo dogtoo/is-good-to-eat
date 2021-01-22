@@ -27,6 +27,7 @@ function Main() {
       <div className="main__itemlink">custom analysis</div>
       <div className="main__itemlink">staff analysis</div>
       <div className="main__itemlink">face analysis data</div>
+      <div className="main__itemlink"><Link to="/jenkins">Jenkins</Link></div>
     </div>
   );
 }

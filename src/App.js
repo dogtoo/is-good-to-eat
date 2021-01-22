@@ -5,6 +5,7 @@ import Order from "./Order";
 import CheckOut from "./CheckOut";
 import Question from "./Question";
 import Login from "./Login";
+import Jenkins from "./Jenkins";
 import MealsAnalysis from "./MealsAnalysis";
 import AuthStateChanged from "./AuthStateChanged";
 
@@ -44,6 +45,7 @@ function App() {
             component={MealsAnalysis}
             title="MealsAnalysis"
           />
+          <Route exact path="/jenkins" component={Jenkins} />
           <Route exact path="/login" component={Login} />
         </div>
       </Router>
