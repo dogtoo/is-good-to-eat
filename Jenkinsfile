@@ -13,7 +13,7 @@ pipeline {
         }
         stage('start') {
             steps {
-                sh 'PORT=32769 HTTPS=true react-scripts start'   
+                sh 'npm run start'   
             }
         }
     }
